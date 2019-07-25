@@ -64,13 +64,13 @@ public class RenderCustomPlayer extends RenderLivingBase<AbstractClientPlayer>
     {
     	IPlayerData data = entity.getCapability(PlayerMechanicsProvider.PLAYERDATA_CAP, null);
     	if(data != null) {
-    		
+    		if(!entity.capabilities.isFlying && entity.motionY <= 0 && !entity.onGround && !entity.isSneaking()) {
+    			GlStateManager.rotate(90, 1, 0, 0);
+    			GlStateManager.rotate(data.getTilt(), 0, 0, 1);
+        		
+    		}
     	}
-    	if(entity.isAirBorne && entity.motionY <= 0 && !entity.onGround && !entity.isSneaking()) {
-			GlStateManager.rotate(90, 1, 0, 0);
-			
-    		
-		}
+    	
         if (!entity.isUser() || this.renderManager.renderViewEntity == entity)
         {
             double d0 = y;

@@ -5,6 +5,10 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public class PlayerData implements IPlayerData, INBTSerializable<NBTTagCompound> {
 
+	public PlayerData() {
+		
+	}
+	
 	private float tilt;
 
 	public float getTilt() {

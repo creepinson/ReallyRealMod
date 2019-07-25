@@ -86,13 +86,14 @@ public class Main {
 
 		proxy.preInit();
 		
-	PlayerMechanicsHandler.registerCapabilities();
+		
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		
 		proxy.init();
+		PlayerMechanicsHandler.registerCapabilities();
 	}
 
 	@EventHandler

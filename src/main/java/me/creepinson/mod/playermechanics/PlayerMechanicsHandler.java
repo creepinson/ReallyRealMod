@@ -1,5 +1,7 @@
 package me.creepinson.mod.playermechanics;
 
+import java.util.concurrent.Callable;
+
 import me.creepinson.mod.Main;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
@@ -19,17 +21,25 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class PlayerMechanicsHandler {
 
 	public static final ResourceLocation PLAYERDATA_CAP = new ResourceLocation(Main.MODID, "player_data");
-	
+
 	public static void registerCapabilities() {
-		CapabilityManager.INSTANCE.register(IPlayerData.class, new CapabilityPlayerMechanics(), PlayerData::new);
+		CapabilityManager.INSTANCE.register(IPlayerData.class, new CapabilityPlayerMechanics(), new Factory());
+	}
+
+	private static class Factory implements Callable<IPlayerData> {
+
+		@Override
+		public IPlayerData call() throws Exception {
+			return new PlayerData();
+		}
 	}
 
 	@SubscribeEvent
-	public void attachCapability(AttachCapabilitiesEvent<EntityPlayer> event) {
+	public static void attachCapability(AttachCapabilitiesEvent<EntityPlayer> event) {
 		event.addCapability(PLAYERDATA_CAP, new PlayerMechanicsProvider());
 	}
 
-	public static class PlayerMechanicsProvider implements ICapabilitySerializable<NBTBase> {
+	public static class PlayerMechanicsProvider implements ICapabilitySerializable<NBTTagCompound> {
 		@CapabilityInject(IPlayerData.class)
 		public static final Capability<IPlayerData> PLAYERDATA_CAP = null;
 
@@ -46,12 +56,12 @@ public class PlayerMechanicsHandler {
 		}
 
 		@Override
-		public NBTBase serializeNBT() {
-			return PLAYERDATA_CAP.getStorage().writeNBT(PLAYERDATA_CAP, this.instance, null);
+		public NBTTagCompound serializeNBT() {
+			return (NBTTagCompound) PLAYERDATA_CAP.getStorage().writeNBT(PLAYERDATA_CAP, this.instance, null);
 		}
 
 		@Override
-		public void deserializeNBT(NBTBase nbt) {
+		public void deserializeNBT(NBTTagCompound nbt) {
 			PLAYERDATA_CAP.getStorage().readNBT(PLAYERDATA_CAP, this.instance, null, nbt);
 		}
 	}
